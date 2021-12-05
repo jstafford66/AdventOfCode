@@ -1,4 +1,3 @@
-import networkx as nx
 
 class TwoDGrid:
 
@@ -53,6 +52,14 @@ class TwoDGrid:
         points = []
         for key, data in self.grid.items():
             if data['value'] == value:
+                points.append(key)
+        
+        return points
+    
+    def getPointsGreaterThan(self, value):
+        points = []
+        for key, data in self.grid.items():
+            if data['value'] > value:
                 points.append(key)
         
         return points
