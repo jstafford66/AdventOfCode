@@ -1,4 +1,3 @@
-from os import truncate
 import LoadInput
 from TwoDimensionGrid import TwoDGrid
 import re
