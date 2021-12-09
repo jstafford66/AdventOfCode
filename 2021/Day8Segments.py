@@ -59,8 +59,6 @@ def determineSegments(patterns):
     # top segment is the difference between 7 and 1
     segment[0] = list(sevens - ones)[0]
 
-    # find the number that is 6 by fining out which of these is 
-    # missing a segement that is contained in 1
     for pat in segs_6:
         missing = eights - pat
         seg = list(missing)[0]
