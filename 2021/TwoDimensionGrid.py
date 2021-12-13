@@ -12,6 +12,9 @@ class TwoDGrid:
     def GetPoint(self, point):
         return self._getPoint(self.grid, point)
     
+    def DeletePoint(self, point):
+        self.grid.pop(point, None)
+    
     def PeekPoint(self, point):
         return self._peekPoint(self.grid, point)
 
@@ -120,7 +123,7 @@ class TwoDGrid:
             txt = ''
             for col in range(xmax + xoffset + 1):
                 point = (col - xoffset, row - yoffset)
-                txt += self.GetPoint(point) if point in self.grid else self.default
+                txt += self.GetPoint(point) if point in self.grid else str(self.default)
             
             print (txt)
     

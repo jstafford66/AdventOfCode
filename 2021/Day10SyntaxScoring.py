@@ -86,6 +86,4 @@ def part2(lines):
     mid = math.floor(len(scores) / 2)
     return scores[mid]
 
-
 print(part2(lines))
-        
