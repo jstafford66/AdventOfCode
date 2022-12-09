@@ -12,6 +12,14 @@ class TwoDGrid:
     def GetPoint(self, point):
         return self._getPoint(self.grid, point)
     
+    def IncrementPoint(self, point):
+        value = self._getPoint(self.grid, point)
+        self.grid[point] = {'value':value+1, 'visited':False, 'distance':-1}
+    
+    def DecrementPoint(self, point):
+        value = self._getPoint(self.grid, point)
+        self.grid[point] = {'value':value-1, 'visited':False, 'distance':-1}
+    
     def DeletePoint(self, point):
         self.grid.pop(point, None)
     
