@@ -1,30 +1,49 @@
 
 class TwoDGrid:
+    class GridPoint:
+        def __init__(self, value, visited=False, distance=-1):
+            self.value = value
+            self.visited = visited
+            self.distance = distance
+            self.edges = []
 
+        
     def __init__(self, default_value=0):
         #Dictionary to hold grid, x,y coord is key
         self.grid = {}
         self.default = default_value
     
     def SetPointVal(self, point, value):
-        self.grid[point] = {'value':value, 'visited':False, 'distance':-1}
+        if point in self.grid:
+            self.grid[point].value = value
+        else:
+            self.grid[point] = TwoDGrid.GridPoint(value)
     
     def GetPoint(self, point):
         return self._getPoint(self.grid, point)
     
-    def IncrementPoint(self, point):
-        value = self._getPoint(self.grid, point)
-        self.grid[point] = {'value':value+1, 'visited':False, 'distance':-1}
+    def IncrementPoint(self, point, amt=1):
+        val = self._getPoint(self.grid, point)
+        self.SetPointVal(point=point,value=(val + amt))
     
-    def DecrementPoint(self, point):
-        value = self._getPoint(self.grid, point)
-        self.grid[point] = {'value':value-1, 'visited':False, 'distance':-1}
+    def DecrementPoint(self, point, amt=1):
+        val = self._getPoint(self.grid, point)
+        self.SetPointVal(point=point,value=(val-amt))
     
     def DeletePoint(self, point):
         self.grid.pop(point, None)
     
     def PeekPoint(self, point):
         return self._peekPoint(self.grid, point)
+    
+    def AddPointEdge(self, point, edge_distance, edge_destination):
+        self.grid[point].edges.append({
+            'distance':edge_distance, 
+            'start_point':point, 
+            'start':self.grid[point], 
+            'destination_point':edge_destination, 
+            'destination': self.grid[edge_destination]
+        })
 
     def SnapShot(self):
         self.snap_shot = self.grid.copy()
@@ -54,7 +73,7 @@ class TwoDGrid:
     def countWithValue(self, value):
         count = 0
         for key, data in self.grid.items():
-            if data['value'] == value:
+            if data.value == value:
                 count += 1
         
         return count
@@ -62,7 +81,7 @@ class TwoDGrid:
     def getPointsWithValue(self, value):
         points = []
         for key, data in self.grid.items():
-            if data['value'] == value:
+            if data.value == value:
                 points.append(key)
         
         return points
@@ -70,7 +89,7 @@ class TwoDGrid:
     def getPointsGreaterThan(self, value):
         points = []
         for key, data in self.grid.items():
-            if data['value'] > value:
+            if data.value > value:
                 points.append(key)
         
         return points
@@ -92,21 +111,54 @@ class TwoDGrid:
         value = self.default
 
         if point in grid:
-            value = grid[point]['value']
+            value = grid[point].value
         else:
-            grid[point]= {'value':self.default, 'visited':False, 'distance':-1}
+            grid[point]= TwoDGrid.GridPoint(self.default)
         
         return value
     
     def _peekPoint(self, grid, point):
         value = self.default
         if point in grid:
-            value = grid[point]['value']
+            value = grid[point].value
         return value
 
-    def ShortestPath(point1, point2):
-        
-        return None
+    def ShortestPath(self, start_point, target):
+
+        self._run_dijkstra(start_point)
+
+        shortest = self.grid[target].distance
+
+        return shortest 
+
+    def _run_dijkstra(self, start_point):
+
+        self._clear_visited()
+
+        initial = self.grid[start_point]
+        initial.visited = True
+        initial.distance = 0
+
+        unvisited = []
+        unvisited.extend(initial.edges)
+
+        while unvisited:
+            edge = unvisited.pop(0)
+
+            this_dist = edge['start'].distance + edge['distance']
+
+            if edge['destination'].visited:
+                if edge['destination'].distance > this_dist:
+                    edge['destination'].distance = this_dist
+            else:
+                edge['destination'].visited = True
+                edge['destination'].distance = this_dist
+                unvisited.extend(edge['destination'].edges)
+
+    def _clear_visited(self):
+        for key, data in self.grid.items():
+            data.visited = False
+            data.distance = -1
     
     def print(self):
 
